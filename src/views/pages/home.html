@@ -1,0 +1,241 @@
+<!-- About html -->
+
+{% extends "pages/index.html" %} 
+{% block content %}
+<div class="container pt-3">
+
+    <h1>Liste des enquetes  </h1>
+    <br>
+
+    <table class="table">
+        <tr>
+            <th>ID</th><th>Nom</th><th>Description</th>
+            <th>
+                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal" data-whatever="@getbootstrap"> <span class="fa">+</span> Nouveau enquete</button>
+            </th>
+        </tr>
+        {% for item in home %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.nom }}</td>
+            <td>{{ item.description }}</td>
+            <td>
+                <button class="btn btn-sm btn-danger suppr-btn">
+                    <span class="fa fa-trash-o "></span> Supprimer
+                </button>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-success modif-btn" data-toggle="modal" data-target="#updateModal" data-whatever="@getbootstrap">
+                    <span class="fa fa-edit"></span> Modifier
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 align="center" class="modal-title" >Modification</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="updateName" class="col-form-label">Nom:</label>
+                            <input type="text" class="form-control" id="updateName">
+                        </div>
+                        <div class="form-group">
+                            <label for="updateText" class="col-form-label">Description:</label>
+
+                            <input type="text" class="form-control" id="updateText">
+                        </div>
+                        <input type="hidden" id="num_hidden">
+                    </form>
+                    <div id="alert-modif" class="alert  alert-danger col-sm-offset-1 col-sm-10" style="display: none">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="button " disabled="" id="btn-modif-confirm" class="btn btn-primary">Modifier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 align="center" class="modal-title" id="exampleModalLabel">Ajout d'enquete</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="addName" class="col-form-label">Nom:</label>
+                            <input type="text" class="form-control" id="addName">
+                        </div>
+                        <div class="form-group">
+                            <label for="addText" class="col-form-label">Description:</label>
+                            <input type="text" class="form-control" id="addText">
+                        </div>
+                    </form>
+                    <div id="alert" class="alert  alert-danger col-sm-offset-1 col-sm-10" style="display: none">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="button" disabled="" id="ajout-btn" class="btn btn-primary">Ajouter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(function(){
+        /* verification des champs de formulaire nom et description nom qui port id addName
+        qui permet d'alerter et de desactiver la boutton Ajouter s'il est vide */
+        $("#addName").keyup(function(){
+            if($("#addName").val()==""){
+                $('#alert').fadeIn().text('La valeur de champ nom est vide');
+                $('#addName').css('border-color','red');
+            }else{
+                $('#alert').fadeOut();
+                $('#addName').css('border-color','gainsboro');
+            }
+            if($("#addText").val()=="" || $("#addName").val()==""){
+                $('#ajout-btn').attr({disabled:true});
+            }
+            else {
+                $('#ajout-btn').attr({disabled:false});
+            }
+        });
+
+        /* verification des champs de formulaire nom et description nom qui port id addText
+        qui permet d'alerter et de desactiver la boutton Ajouter s'il est vide*/
+        $("#addText").keyup(function(){
+            if($("#addText").val()==""){
+                $('#alert').fadeIn().text('La valeur de champ Description est vide');
+                $('#addText').css('border-color','red');
+
+            }else{
+                $('#alert').fadeOut();
+                $('#addText').css('border-color','gainsboro');
+
+            }
+            if($("#addText").val()=="" || $("#addName").val()==""){
+                $('#ajout-btn').attr({disabled:true});
+            }
+            else {
+                $('#ajout-btn').attr({disabled:false});
+            }
+        });
+
+        /* verification des champs de formulaire nom et description nom qui port id updateName
+        qui permet d'alerter et de desactiver la boutton Modifier s'il est vide*/
+        $("#updateName").keyup(function(){
+            if($("#updateName").val()==""){
+                $('#alert-modif').fadeIn().text('La valeur de champ nom est vide');
+                $('#updateName').css('border-color','red');
+            }else{
+                $('#alert-modif').fadeOut();
+                updateName            }
+            if($("#updateText").val()=="" || $("#addName").val()==""){
+                $('#btn-modif-confirm').attr({disabled:true});
+            }
+            else {
+                $('#btn-modif-confirm').attr({disabled:false});
+            }
+        });
+
+        /* verification des champs de formulaire nom et description nom qui port id updateText
+        qui permet d'alerter et de desactiver la boutton Modifier s'il est vide*/
+        $("#updateText").keyup(function(){
+            if($("#updateText").val()==""){
+                $('#alert-modif').fadeIn().text('La valeur de champ Description est vide');
+                $('#addText').css('border-color','red');
+
+            }else{
+                $('#alert-modif').fadeOut();
+                $('#updateText').css('border-color','gainsboro');
+
+            }
+            if($("#updateName").val()=="" || $("#updateText").val()==""){
+                $('#btn-modif-confirm').attr({disabled:true});
+            }
+            else {
+                $('#btn-modif-confirm').attr({disabled:false});
+            }
+        });
+
+    });
+
+
+    $('#ajout-btn').click(function () {
+
+        if (confirm("Voulez-vous Ajouter vraiment? ")){
+            //alert(parseInt($("#num_hidden").val())+"  "+typeof($("#num_hidden").val()))
+            $.ajax({
+                type:'POST',
+                url:'/enquete/',
+                data: { nom: $("#addName").val(), description: $("#addText").val() },
+                success:function(data){
+                    console.log(data);
+                    setTimeout(function(){ location.reload(); },1000);
+                },
+                error:function(err){console.log(err);alert("Erreur");}
+            });
+        }
+    });
+    $('.modif-btn').click(function() {
+        /*$("#num_hidden").val($(this).parent().attr('data-val'));
+        $("#num_mod").val($(this).parent().attr('data-val'));*/
+        $("#num_hidden").val($(this).parent().parent().find("td").eq(0).text());
+        $("#updateName").val($(this).parent().parent().find("td").eq(1).text());
+        $("#updateText").val($(this).parent().parent().find("td").eq(2).text());
+        //console.log($(this).parent().parent().find("td").eq(2).text());
+
+    });
+    $('#btn-modif-confirm').click(function () {
+        if (confirm("Voulez-vous modifier vraiment? ")){
+            //alert(parseInt($("#num_hidden").val())+"  "+typeof($("#num_hidden").val()))
+            $.ajax({
+                type:'PUT',
+                url:'/enquete/'+parseInt($("#num_hidden").val()),
+                data: { nom: $("#updateName").val(), description: $("#updateText").val() },
+                success:function(data){
+                    console.log(data);
+                    setTimeout(function(){ location.reload(); },1000);
+                },
+                error:function(err){console.log(err);alert("Erreur");}
+            });
+        }
+    });
+    $('.suppr-btn').click(function (){
+        if (confirm("Voulez-vous supprimer vraiment? ")){
+            $.ajax({
+                type:'DELETE',
+                url:'/enquete/'+parseInt($(this).parent().parent().find("td").eq(0).text()),
+                success:function(data){
+                    console.log(data);
+                    setTimeout(function(){ location.reload(); },2000);
+                },
+                error:function(){alert('La requête n\'a pas abouti');}
+            });
+            $(this).parent().parent().remove();
+        }
+
+    });
+</script>
+
+
+
+{% endblock %}
+
